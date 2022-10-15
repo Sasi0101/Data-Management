@@ -1,0 +1,35 @@
+commit cf7f7d261809cc5686643ee062e735ec29ea08ab
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 21:17:53 2021 +0000
+
+    Added sort at the end to sort the output in order by the second column and then reversing it so the highest is at the top
+
+commit 361741aaaaa5e5b2cd5cccbe3894d9e044051fe5
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 19:09:14 2021 +0000
+
+    counting how many times <Author> appears in the $FILE
+
+commit bc25e0471472649edb8c9fedc3f75f988754983b
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 19:06:38 2021 +0000
+
+    Added echo -n " " to separate the hotel name and the review count with a space
+
+commit 14168db540ed91ec10619c9c7a52b1729052b4a5
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 13:59:50 2021 +0000
+
+    Added a for cycle to list the names of all hotel.
+
+commit fccf1797d411cd546d39b0b5d410f486c4de2c66
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 13:57:07 2021 +0000
+
+    Test
+
+commit ca7cd6a3222935c5981a0a01f9b431645d0f30fc
+Author: Sandor Kovacs <sk10g20@soton.ac.uk>
+Date:   Fri Feb 26 13:51:35 2021 +0000
+
+    The cd $1 is to go into the right directory.

@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\title{Counting hotel reviews}
+\author{Sandor Kovacs id: 31773478}
+\date{March 2021}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  stringstyle=\color{codepurple}
+}
+\lstset{style=mystyle}
+
+\begin{document}
+\maketitle
+
+
+\section{Introduction}
+
+In this coursework the problem was to sort hotels according to their review number. This way the popularity and effectiveness of a hotel could be measured.
+
+\section{Overall solution}
+I tried doing this problem by first finding the directory where the files are. After that, finding a unique word which appears only once in every review was a key aspect of this project so we could count the number of reviews. Than we needed to sort the hotels by their number of reviews.
+
+\section{The code}
+
+\begin{lstlisting}
+#!/bin/bash
+cd $1
+for FILE in *;
+do
+echo -n $FILE  | sed -e "s/.dat//"
+echo -n " "
+grep -i -c "<Author>" $FILE
+done | sort -n -k2 -r
+\end{lstlisting}
+
+
+%first line of code
+\subsection{}
+\begin{lstlisting}
+cd $1
+\end{lstlisting}
+This line is used to change the directory (cd) so that we are in the same directory where the \texttt{"hotel\char`_number.dat"} files are. Than it takes the argument from the command line which represents the path where the files are.
+
+
+%for cycle
+\subsection{}
+\begin{lstlisting}
+for FILE in *;
+\end{lstlisting}
+This loops through every single file in the directory which we are currently in represented by *.
+\begin{lstlisting}
+do
+
+done
+\end{lstlisting}
+The "do" and "done" parts represent the beginning and the ending of the for cycle. The code written within these two command will be executed for each file in the directory.
+
+
+%discussing the inside of a for cycle
+\subsection{}
+\begin{lstlisting}
+echo -n $FILE | sed -e "s/.dat//"
+echo -n " "
+grep -i -c "<Author>" $FILE
+\end{lstlisting}
+The first line of the code eliminates the ".dat" part from the file so only the name of the hotel remains. The "-n" part allows us to write more argument in the same line. After this we put a space as a separator. The third line counts the number of times "Author" appears in the document and then writes that number.
+
+
+%discussing the sort part
+\subsection{}
+\begin{lstlisting}
+| sort -n -k2 -r
+\end{lstlisting}
+This line sorts the output of the for cycle according to the second column "-k2". After that it reverses the order as the original sorted it in increasing order but we need it in decreasing order.
+
+
+\end{document}

@@ -1,0 +1,212 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+
+\title{Report}
+\author{Sandor Kovacs\\sk10g20\\31773478}
+\date{May 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The aim of this report is to create a SQlite database to represent current Coronavirus data. The report involves creating and normalising a database to hold the data from a dataset and constructing queries against the data once it is in a suitable form.
+\section{The Relational Model}
+\subsection{EX1}
+\begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{Dataset} \\
+     \hline dateRep & NUMERIC \\
+     \hline day & INTEGER \\
+     \hline month & INTEGER \\
+     \hline year & INTEGER \\
+     \hline cases & INTEGER \\
+     \hline deaths & INTEGER \\
+     \hline countriesAndTerritories & TEXT \\
+     \hline geoId & TEXT \\
+     \hline countryterritoryCode & TEXT \\
+     \hline popData2019 & INTEGER \\
+     \hline continentExp & TEXT \\
+     \hline
+\end{tabular}
+
+\subsection{EX2}
+dateRep $\rightarrow$ day \\
+dateRep $\rightarrow$ month \\
+dateRep $\rightarrow$ year \\
+countriesAndTerritories $\rightarrow$ geoId \\
+countriesAndTerritories $\rightarrow$ countryterritoryCode \\
+countriesAndTerritories $\rightarrow$ popData2019 \\
+countriesAndTerritories $\rightarrow$ continentExp \\
+day, month, year $\rightarrow$ dateRep \\
+dateRep, countriesAndTerritories $\rightarrow$ cases \\
+geoId $\rightarrow$ countriesAndTerritories \\
+dateRep, countriesAndTerritories $\rightarrow$ deaths 
+\par
+There are null values in the dataset for data both in countryterritoryCode as well as popData2019 for Wallis-and-Futuna and Cases-on-an-international-conveyance-Japan. This is why they can not be part of primary key as they can not determine anything else due to their null values.\par
+
+\subsection{EX3}
+dateRep, countriesAndTerritories $\rightarrow$ Predicts Everything \\
+day, month, year, countriesAndTerritories $\rightarrow$ Predicts Everything \\
+dateRep, geoId $\rightarrow$ Predicts Everything \\
+day, month, year, geoId $\rightarrow$ Predicts Everything \\
+
+\subsection{EX4}
+There are several primary keys that could be used. The primary key that I will be using is dateRep, countriesAndTerritories, as this is the easiest and most convenient one to use.
+
+\section{Normalisation}
+
+\subsection{EX5}
+Partial Key Dependencies: \\
+day, month, year $\rightarrow$ dateRep \\
+dateRep $\rightarrow$ day, month, year \\
+countriesAndTerritories $\rightarrow$ geoId, countryterritoryCode, continentExp, popData2019 \\
+geoId $\rightarrow$ countryterritoryCode, continentExp, popData2019, countriesAndTerritories \\
+
+\subsection{EX6}
+\begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{DateTable} \\
+     \hline dateRep(key) & NUMERIC \\
+     \hline day & INTEGER \\
+     \hline month & INTEGER \\
+     \hline year & INTEGER \\
+     \hline
+\end{tabular}
+\\\\\\
+\begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{CountryDataTable} \\
+     \hline countriesAndTerritories(key) & TEXT \\
+     \hline geoId & TEXT \\
+     \hline countryterritoryCode & TEXT \\
+     \hline popData2019 & INTEGER \\
+     \hline continentExp & TEXT \\
+     \hline
+\end{tabular}
+\\\\\\
+\begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{CaseAndDeathTable} \\
+     \hline dateRep(key) & NUMERIC \\
+     \hline cases & INTEGER \\
+     \hline deaths & INTEGER \\
+     \hline countriesAndTerritories(key) & TEXT \\
+     \hline
+\end{tabular} \par
+In order to be in second normal form no partial key dependencies are allowed so I searched all partial keys, and then decomposed the original table so that no partial keys could be found in any of the new tables. Than we have our tables in second normal form.
+
+\subsection{EX7}
+I could not find any transitive dependencies in my new tables.
+
+\subsection{EX8}
+To be in third normal form no transitive dependencies are allowed. In each table, the attributes are only dependent on the key. There is one exception "CountryDataTable", where the attributes are dependent not only on "countriesAndTerritories" but also "geoId". However, while "geoId" is dependent on "countriesAndTerritories", the same is true the other way around which means this is not a transitive dependency. 
+
+\subsection{EX9}
+"DateTable" and "CaseAndDeathTable" are in Boyce-Codd Normal Form. "CountryDataTable" is not in Boyce-Codd Normal Form, as "geoId" can determine "countriesAndTerritories" even though it is a non prime attribute.
+
+\section{Modelling}
+\subsection{EX10}
+Firstly, I downloaded the "dataset.csv" file, than I ran the following lines in the terminal:
+\begin{algorithm}
+sqlite3 coronavirus.db \\
+.mode csv \\
+.import dataset.csv dataset \\
+.once dataset.sql
+\end{algorithm} \par
+The first line is to create a new database named "coronavirus.db". The second line is to change the default mode to csv. The third line imports the dataset into a table named "dataset". Finally, the last line exports the data into a file named "dataset.sql".
+
+\subsection{EX11}
+In this exercise, I created five tables according to the specifications:
+\begin{algorithm}
+CREATE TABLE NameOfTable \\
+( \\
+    attribute1 TYPE, \\
+    attribute2 TYPE, \\
+    attribute3 TYPE  \\
+);
+\end{algorithm} \par
+Than I executed the following commands in the terminal to store the new tables in the "dataset2.sql" file:
+\begin{algorithm}
+sqlite3 coronavirus.db < ex11.sql \\
+sqlite3 coronavirus.db \\
+.output dataset2.sql \\
+.dump datesTable, deathCasesTable, geoIdTable, countriesTable, countriesDataTable
+\end{algorithm} \par
+The first line is to execute ex11.sql against the coronavirus.db database than we go into the database and output the results to the dataset2.sql than I dumped the tables into it.
+
+\subsection{EX12}
+In this exercise I inserted the appropriate data into each of the normalised tables.
+\begin{algorithm}
+INSERT INTO NameOfTable(firstAttribute, secondAttribute, thirdAttribute) \\
+SELECT firstAttribute, secondAttribute, thirdAttribute \\
+FROM dataset GROUP BY firstAttribute;
+\end{algorithm} \par
+Afterwards I executed the following commands in the terminal to store the new tables in the "dataset3.sql" file:
+\begin{algorithm}
+sqlite3 coronavirus.db < ex12.sql \\
+sqlite3 coronavirus.db \\
+.output dataset3.sql \\
+.dump datesTable, deathCasesTable, geoIdTable, countriesTable, countriesDataTable
+\end{algorithm} \par
+The first line is to execute ex12.sql against the coronavirus.db database than we go into the database and output the results to the dataset3.sql than I dumped the tables into it.
+
+\subsection{EX13}
+To test my database and SQL code, I created a new database and tested my code on it, and I got the expected output.
+
+\section{Querying}
+\subsection{EX14}
+In this exercise I just selected the sum of the cases and deaths columns:
+\begin{algorithm}
+SELECT SUM(cases), SUM(deaths) \\
+FROM CaseAndDeathTable;
+\end{algorithm} \newpage
+
+\subsection{EX15}
+In this exercise, I selected the "cases" and "dateRep" columns. Then as I only wanted to check data in the UK I only permitted the query to sum where countriesAndTerritories='United-Kingdom' . Finally, I used a command called "strftime", which allows sorting a column, based on a date and than sorted it in ascending order with the ASC command.
+\begin{algorithm}
+SELECT dateRep, cases \\
+FROM dataset \\
+WHERE countriesAndTerritories='United-Kingdom' \\
+ORDER BY strftime("\%d/\%m/\%Y",dateRep) ASC;
+\end{algorithm} \par
+
+\subsection{EX16}
+In this exercise, I selected the "dateRep", "continentExp" columns as well as the sum of "cases" and "deaths". Firstly I grouped the output by continent and date to allow me to order it based on the same criteria. I learned that GROUP BY is usually followed by ORDER BY to get the expected output. The substr command allowed me to take only a part of a string as dateRep was the year month and day and I needed them separately so I separated them.
+\begin{algorithm}
+SELECT continentExp, dateRep, sum(cases), sum(deaths) \\
+FROM dataset \\
+GROUP BY continentExp, substr(dateRep,7,4)$||$substr(dateRep,4,2)$||$substr(dateRep,1,2); \\
+ORDER BY continentExp, substr(dateRep,7,4)$||$substr(dateRep,4,2)$||$substr(dateRep,1,2); 
+\end{algorithm} \par
+
+\subsection{EX17}
+In this exercise, I selected the "countriesAndTerritories" and calculated the number of cases and deaths as a percentage of the population. The printf command returns a formatted string with the calculated values. I calculated the percentages with a 2 decimal accuracy(using the .2f command) as this is the way it is mostly used. Than I grouped it bu countriesAndTerritories and ordered it by the same criteria.
+\begin{algorithm}
+SELECT countriesAndTerritories, printf("\%.2f",100.0*(sum(cases)*1.0/popData2019*1.0)), printf("\%.2f", 100.0*(sum(deaths)*1.0/popData2019*1.0)) \\
+FROM dataset \\
+GROUP BY countriesAndTerritories \\
+ORDER BY countriesAndTerritories
+\end{algorithm}
+
+\subsection{EX18}
+In this exercise, I selected the "countriesAndTerritories" and calculated the percentage of deaths per cases selecting it from the dataset. I worked with a 2 decimal accuracy, and in order for the output to be just the first 10 I limited the output after I grouped it and ordered it.
+\begin{algorithm}
+SELECT countriesAndTerritories, printf("\%.2f",100.0*(sum(deaths)*1.0/sum(cases)*1.0)) \\
+FROM dataset \\
+GROUP BY countriesAndTerritories \\
+ORDER BY 2 DESC \\
+LIMIT 10
+\end{algorithm} \par
+
+\subsection{EX19}
+In this exercise I selected the dateRep and the sum of cases and deaths but I used UNBOUNDED PRECEDING so that the frame would start at the first data of the partition and ends at the current row allowing me to calculate the cumulative deaths and cases easily. I selected this from the dataset but before selecting it I did a modification where I firstly ordered the data  by the date and put it in ascending order. Then as I only needed data in the United Kingdom I only allowed the query to select data where countriesAndTerritories='United-Kingdom'. Finally, I ordered them by date using the substr command again.
+\begin{algorithm} 
+SELECT dateRep, SUM(cases) OVER (ROWS UNBOUNDED PRECEDING), SUM(deaths) OVER (ROWS UNBOUNDED PRECEDING) \\
+FROM (SELECT * FROM dataset ORDER BY substr(dateRep,7,4)$||$substr(dateRep,4,2)$||$substr(dateRep,1,2) ASC) \\
+WHERE countriesAndTerritories='United-Kingdom' \\
+ORDER BY substr(dateRep,7,4)$||$substr(dateRep,4,2)$||$substr(dateRep,1,2);;
+\end{algorithm} \par
+
+\end{document}
